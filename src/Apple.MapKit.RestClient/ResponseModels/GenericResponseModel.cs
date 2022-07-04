@@ -9,7 +9,6 @@ namespace Apple.MapKit.RestClient.ResponseModels
         {
             results = new List<Place>();
         }
-
         public List<Place> results { get; set; }
     }
 
@@ -48,6 +47,11 @@ namespace Apple.MapKit.RestClient.ResponseModels
         public int timezoneSecondsFromGmt { get; set; }
         public string placecardUrl { get; set; }
         public Iso3166 iso3166 { get; set; }
+        public string muid { get; set; }
+        public string telephone { get; set; }
+        public List<string> urls { get; set; }
+        public string poiCategory { get; set; }
+
     }
 
     public class Center
