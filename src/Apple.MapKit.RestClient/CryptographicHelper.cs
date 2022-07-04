@@ -11,10 +11,10 @@ namespace Apple.MapKit.RestClient
     /// </summary>
     public static class CryptographicHelper
     {
-        public static string CreateJWT(string privateKeyContent, string teamId, string keyId)
+        public static string CreateJWT(string privateKeyContent, string teamId, string keyId, string origin="")
         {
             var header = Base64EncodeJWT(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(new TokenHeader(keyId))));
-            var payload = Base64EncodeJWT(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(new TokenPayload(teamId))));
+            var payload = Base64EncodeJWT(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(new TokenPayload(teamId, origin))));
 
             var unsigned = $"{header}.{payload}";
             var signature = CreateSignature(privateKeyContent, unsigned);
@@ -76,9 +76,10 @@ namespace Apple.MapKit.RestClient
 
     public class TokenPayload
     {
-        public TokenPayload(string teamIdentifier)
+        public TokenPayload(string teamIdentifier, string Origin)
         {
             iss = teamIdentifier;
+            origin = Origin;
         }
 
         /// <summary>
@@ -97,5 +98,7 @@ namespace Apple.MapKit.RestClient
         ///     since UNIX Epoch, in UTC.
         /// </summary>
         public long exp => DateTimeOffset.Now.AddHours(1).ToUnixTimeSeconds();
+
+        public string origin { get; }
     }
 }

@@ -5,6 +5,6 @@
         public static string CdnUrl => "https://cdn.apple-mapkit.com";
         
         public static string SnapShotUrl => "https://snapshot.apple-mapkit.com";
-        public static string MK_JS_Version => "5.69.0";
+        public static string MK_JS_Version => ""; 
     }
 }
