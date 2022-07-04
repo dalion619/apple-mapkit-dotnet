@@ -29,7 +29,7 @@ var places = await mapkitClient.Autocomplete(query);
 ```
 ```json
 {
-    "results": [
+    [
         {
             "completionUrl": "/v1/search?q=Apple%20Park%20Apple%20Inc.%2C%20One%20Apple%20Park%20Way%2C%20Cupertino%2C%20CA%2095014%2C%20United%20States&metadata=ChIKCkFwcGxlIFBhcmsSBAgAEAUSRApCQXBwbGUgSW5jLiwgT25lIEFwcGxlIFBhcmsgV2F5LCBDdXBlcnRpbm8sIENBIDk1MDE0LCBVbml0ZWQgU3RhdGVzGAEqIQoSCQAAAADeqkJAEQAAAMCTgF7AEMrsrO6smpThBxiuTWISChBBcHBsZSBIZWFkcXVhdGVygvEEEEFwcGxlIEhlYWRxdWF0ZXKI8QQA2vEEFgkAAABAmvXIQBEAAACAJIrUQDICZW7q8QQA",
             "displayLines": [
@@ -124,7 +124,7 @@ var places = await mapkitClient.ReverseGeoCode("37.3349","-122.00902");
 ```
 ```json
 {
-    "results": [
+   [
         {
             "center": {
                 "lat": 37.3348892,
