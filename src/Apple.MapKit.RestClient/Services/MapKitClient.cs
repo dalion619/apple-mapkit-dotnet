@@ -9,6 +9,14 @@ using Apple.MapKit.RestClient.RequestModels;
 using Apple.MapKit.RestClient.ResponseModels;
 using Microsoft.Extensions.Options;
 using Refit;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Apple.MapKit.RestClient.Services
 {
@@ -19,6 +27,9 @@ namespace Apple.MapKit.RestClient.Services
     {
         private readonly HttpClient _httpClient;
         private readonly MapKitOptions _options;
+        private IBootstrap _bootstrapEndpoint { get; }
+        private IPlace _placeEndpoint { get; }
+        private ISearch _searchEndpoint { get; }
 
         public MapKitClient(IOptions<MapKitOptions> optionsAccessor)
         {
@@ -36,10 +47,6 @@ namespace Apple.MapKit.RestClient.Services
             _searchEndpoint = RestService.For<ISearch>(_httpClient);
         }
 
-        private IBootstrap _bootstrapEndpoint { get; }
-        private IPlace _placeEndpoint { get; }
-        private ISearch _searchEndpoint { get; }
-
         public string CreateSnapShotUrl(string latitude, string longitude, string colorScheme)
         {
             var marker = "[{\"point\":\"" + $"{latitude},{longitude}" + "\",\"markerStyle\":\"large\",\"color\":\"e6523b\"}]";
@@ -50,10 +57,32 @@ namespace Apple.MapKit.RestClient.Services
             return MapKitConstants.SnapShotUrl + path + "&signature=" + sig;
         }
 
-        public async Task<List<Place>> PlacesForGeoCode(string latitude, string longitude)
+        public async Task<List<Place>> Geocode(string query)
         {
-            var response = await _placeEndpoint.ReverseGeocode(new BaseRequestModel(), $"{latitude},{longitude}");
-            if (response == null) throw new NullReferenceException(nameof(PlacesForGeoCode));
+            var response = await _placeEndpoint.Geocode($"{query}");
+            if (response == null) throw new NullReferenceException(nameof(Geocode));
+            
+            return response.results;
+        }
+
+        public async Task<List<Place>> ReverseGeocode(string latitude, string longitude)
+        {
+            var response = await _placeEndpoint.ReverseGeocode($"{latitude},{longitude}");
+            if (response == null) throw new NullReferenceException(nameof(ReverseGeocode));
+            return response.results;
+        }
+
+        public async Task<List<Place>> Search(string query)
+        {
+            var response = await _searchEndpoint.Search($"{query}");
+            if (response == null) throw new NullReferenceException(nameof(Search));
+            return response.results;
+        }
+
+        public async Task<List<AutocompleteResult>> Autocomplete(string query)
+        {
+            var response = await _searchEndpoint.SearchAutocomplete($"{query}");
+            if (response == null) throw new NullReferenceException(nameof(Autocomplete));
             return response.results;
         }
 
@@ -62,8 +91,7 @@ namespace Apple.MapKit.RestClient.Services
             var jwt = "Bearer " + CryptographicHelper.CreateJWT(_options.PrivateKeyContent, _options.TeamId, _options.KeyId);
             var bootstrapResponse = await _bootstrapEndpoint.Init(jwt, "2", MapKitConstants.MK_JS_Version, "1");
             if (bootstrapResponse == null) throw new ArgumentNullException(nameof(bootstrapResponse));
-
             return bootstrapResponse.authInfo;
         }
-    }
+    }     
 }

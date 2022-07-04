@@ -9,9 +9,13 @@ namespace Apple.MapKit.RestClient.Interfaces
     public interface IPlace
     {
         [Get("/geocode?q={query}")]
-        Task<GenericResponseModel> Geocode(BaseRequestModel model, string query);
+        Task<GenericResponseModel> Geocode(string query);
+
+        [Get("/geocode?q={query}")]
+        Task<string> TestGeocode(string query);
+        
 
         [Get("/reverseGeocode?loc={location}")]
-        Task<GenericResponseModel> ReverseGeocode(BaseRequestModel model, string location);
+        Task<GenericResponseModel> ReverseGeocode(string location);
     }
 }
